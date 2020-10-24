@@ -1,8 +1,13 @@
 #!/bin/sh
 
 
+# decalring empty assosiative array
 declare -A FILES
+
+#function to get files state
 function getFiles() {
+    
+    #naming each flag
     case $1 in
         "-o") 
             state="untracked"
@@ -21,6 +26,7 @@ function getFiles() {
             ;;
     esac
 
+    # getting list of files according to flags
     ST=$(git ls-files $1)
 
     files=()
@@ -28,6 +34,8 @@ function getFiles() {
     do
         files+=($f)
     done
+
+    #assosiative array with keys as files states and values and list of files
     FILES+=([$state]=${files[@]})
 }
 
@@ -35,6 +43,7 @@ getFiles "-o"
 getFiles "-m"
 getFiles "-d"
 
+#echo all files with their states on shell
 for key in "${!FILES[@]}"
 do
     echo "$key => ${FILES[$key]}"
