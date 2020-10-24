@@ -1,0 +1,43 @@
+#!/bin/sh
+
+
+declare -A FILES
+function getFiles() {
+    case $1 in
+        "-o") 
+            state="untracked"
+            ;;
+        "-d")
+            state="deleted"
+            ;;
+        "-m")
+            state="modified"
+            ;;
+        "-c")
+            state="cached"
+            ;;
+        *)
+            state="unknown"
+            ;;
+    esac
+
+    ST=$(git ls-files $1)
+
+    files=()
+    for f in $ST
+    do
+        files+=($f)
+    done
+    FILES+=([$state]=${files[@]})
+}
+
+getFiles "-o"
+getFiles "-m"
+getFiles "-d"
+
+for key in "${!FILES[@]}"
+do
+    echo "$key => ${FILES[$key]}"
+done
+
+
